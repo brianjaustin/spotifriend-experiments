@@ -18,6 +18,10 @@ config :melody_match, MelodyMatchWeb.Endpoint,
   pubsub_server: MelodyMatch.PubSub,
   live_view: [signing_salt: "8nDMjU4n"]
 
+# Configures Argon2 hashing library (see
+# https://github.com/riverrun/comeonin/wiki/Choosing-the-password-hashing-library#argon2)
+config :argon2_elixir, t_cost: 2, m_cost: 8
+
 # Configures Elixir's Logger
 config :logger, :console,
   format: "$time $metadata[$level] $message\n",

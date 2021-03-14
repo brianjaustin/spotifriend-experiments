@@ -19,10 +19,11 @@ defmodule MelodyMatchWeb.Router do
     get "/", PageController, :index
   end
 
-  # Other scopes may use custom stacks.
-  # scope "/api", MelodyMatchWeb do
-  #   pipe_through :api
-  # end
+  scope "/api/v1", MelodyMatchWeb do
+    pipe_through :api
+
+    resources "/users", UserController, except: [:new, :edit]
+  end
 
   # Enables LiveDashboard only for development
   #

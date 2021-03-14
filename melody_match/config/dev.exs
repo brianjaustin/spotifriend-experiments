@@ -2,8 +2,8 @@ use Mix.Config
 
 # Configure your database
 config :melody_match, MelodyMatch.Repo,
-  username: "postgres",
-  password: "postgres",
+  username: "melody_match",
+  password: "p@ssw0rd",
   database: "melody_match_dev",
   hostname: "localhost",
   show_sensitive_data_on_connection_error: true,
