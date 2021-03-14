@@ -23,6 +23,7 @@ defmodule MelodyMatchWeb.Router do
     pipe_through :api
 
     resources "/users", UserController, except: [:new, :edit]
+    resources "/spotify_tokens", SpotifyTokenController, only: [:create, :update, :delete]
   end
 
   # Enables LiveDashboard only for development

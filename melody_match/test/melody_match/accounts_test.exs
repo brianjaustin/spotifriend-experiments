@@ -76,4 +76,70 @@ defmodule MelodyMatch.AccountsTest do
       assert %Ecto.Changeset{} = Accounts.change_user(user)
     end
   end
+
+  describe "spotify_tokens" do
+    alias MelodyMatch.Accounts.SpotifyToken
+
+    @valid_attrs %{auth_token: "some auth_token", refresh_token: "some refresh_token"}
+    @update_attrs %{auth_token: "some updated auth_token", refresh_token: "some updated refresh_token"}
+    @invalid_attrs %{auth_token: nil, refresh_token: nil}
+
+    def spotify_token_fixture(attrs \\ %{}) do
+      user = user_fixture()
+      {:ok, spotify_token} =
+        attrs
+        |> Enum.into(@valid_attrs)
+        |> Map.put(:user_id, user.id)
+        |> Accounts.create_spotify_token()
+
+      spotify_token
+    end
+
+    test "list_spotify_tokens/0 returns all spotify_tokens" do
+      spotify_token = spotify_token_fixture()
+      assert Accounts.list_spotify_tokens() == [spotify_token]
+    end
+
+    test "get_spotify_token!/1 returns the spotify_token with given id" do
+      spotify_token = spotify_token_fixture()
+      assert Accounts.get_spotify_token!(spotify_token.user_id) == spotify_token
+    end
+
+    test "create_spotify_token/1 with valid data creates a spotify_token" do
+      user = user_fixture()
+      assert {:ok, %SpotifyToken{} = spotify_token} = @valid_attrs
+      |> Map.put(:user_id, user.id)
+      |> Accounts.create_spotify_token()
+      assert spotify_token.auth_token == "some auth_token"
+      assert spotify_token.refresh_token == "some refresh_token"
+    end
+
+    test "create_spotify_token/1 with invalid data returns error changeset" do
+      assert {:error, %Ecto.Changeset{}} = Accounts.create_spotify_token(@invalid_attrs)
+    end
+
+    test "update_spotify_token/2 with valid data updates the spotify_token" do
+      spotify_token = spotify_token_fixture()
+      assert {:ok, %SpotifyToken{} = spotify_token} = Accounts.update_spotify_token(spotify_token, @update_attrs)
+      assert spotify_token.auth_token == "some updated auth_token"
+      assert spotify_token.refresh_token == "some updated refresh_token"
+    end
+
+    test "update_spotify_token/2 with invalid data returns error changeset" do
+      spotify_token = spotify_token_fixture()
+      assert {:error, %Ecto.Changeset{}} = Accounts.update_spotify_token(spotify_token, @invalid_attrs)
+      assert spotify_token == Accounts.get_spotify_token!(spotify_token.user_id)
+    end
+
+    test "delete_spotify_token/1 deletes the spotify_token" do
+      spotify_token = spotify_token_fixture()
+      assert {:ok, %SpotifyToken{}} = Accounts.delete_spotify_token(spotify_token)
+      assert_raise Ecto.NoResultsError, fn -> Accounts.get_spotify_token!(spotify_token.user_id) end
+    end
+
+    test "change_spotify_token/1 returns a spotify_token changeset" do
+      spotify_token = spotify_token_fixture()
+      assert %Ecto.Changeset{} = Accounts.change_spotify_token(spotify_token)
+    end
+  end
 end
