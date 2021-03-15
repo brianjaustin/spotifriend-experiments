@@ -46,7 +46,8 @@ defmodule MelodyMatch.MixProject do
       {:jason, "~> 1.0"},
       {:plug_cowboy, "~> 2.0"},
       {:argon2_elixir, "~> 2.4"},
-      {:not_qwerty123, "~> 2.3"}
+      {:not_qwerty123, "~> 2.3"},
+      {:httpoison, "~> 1.8"}
     ]
   end
 
