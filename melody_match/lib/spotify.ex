@@ -8,7 +8,18 @@ defmodule Spotify do
 
   alias MelodyMatch.Accounts
 
-  def get_tokens(user_id, :code, code) do
+  @doc """
+  Given a user id and an authorization code (fetched somewhere else,
+  likely in the React frontend), retrieve `access_code` and
+  `refresh_token` using the Spotify API and save it to the database for later use.
+
+  ## Arguments
+
+    - user_id: ID of the user whose access tokens will be saved
+    - :code: atom representing the request type (one of :code, :refresh)
+    - code: access code from OAuth grant, must be fetched separately
+  """
+  def get_and_save_tokens(user_id, :code, code) do
     url = "https://accounts.spotify.com/api/token"
     body = {:form, [
       {"grant_type", "authorization_code"},
@@ -28,11 +39,20 @@ defmodule Spotify do
         refresh_token: toks["refresh_token"]
       })
     else
-      {:error, response.body}
+      {:error, response.status_code, response.body}
     end
   end
 
-  def get_tokens(user_id, :refresh) do
+  @doc """
+  Given a user id, use the existing refresh token to obtain a
+  new refresh token.
+
+  ## Arguments
+
+    - user_id: ID of the user whose access token to refresh
+    - :refresh: atom representing the request type (one of :code, :refresh)
+  """
+  def get_and_save_tokens(user_id, :refresh) do
     tokens = Accounts.get_user_spotify_token!(user_id)
 
     url = "https://accounts.spotify.com/api/token"
@@ -49,7 +69,7 @@ defmodule Spotify do
         auth_token: toks["access_token"],
       })
     else
-      {:error, response.body}
+      {:error, response.status_code, response.body}
     end
   end
 
