@@ -142,6 +142,15 @@ defmodule MelodyMatch.Accounts do
   def get_spotify_token!(id), do: Repo.get!(SpotifyToken, id)
 
   @doc """
+  Gets a spotify_token with the given `user_id`.
+
+  Raises `Ecto.NoResultsError` if the token does not exist for the user.
+  """
+  def get_user_spotify_token!(user_id) do
+    Repo.get_by!(SpotifyToken, user_id: user_id)
+  end
+
+  @doc """
   Creates a spotify_token.
 
   ## Examples
