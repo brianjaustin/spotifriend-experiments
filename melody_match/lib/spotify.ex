@@ -18,14 +18,14 @@ defmodule Spotify do
     - user_id: ID of the user whose access tokens will be saved
     - :code: atom representing the request type (one of :code, :refresh)
     - code: access code from OAuth grant, must be fetched separately
+    - redirect_uri: string representation of the uri to call back to once the token is saved
   """
-  def get_and_save_tokens(user_id, :code, code) do
+  def get_and_save_tokens(user_id, :code, code, redirect_uri) do
     url = "https://accounts.spotify.com/api/token"
     body = {:form, [
       {"grant_type", "authorization_code"},
       {"code", code},
-      # TODO: this should be in config too
-      {"redirect_uri", "http://localhost:4000/spotify/callback"}
+      {"redirect_uri", redirect_uri}
     ]}
 
     response = HTTPoison.post!(url, body, auth_headers())

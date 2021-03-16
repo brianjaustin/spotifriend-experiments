@@ -7,7 +7,28 @@
 # General application configuration
 use Mix.Config
 
-config :melody_match,
+c_id =
+  System.get_env("REACT_APP_CLIENT_ID") ||
+    raise """
+    environment variable REACT_APP_CLIENT_ID is missing.
+    """
+
+c_sec =
+  System.get_env("CLIENT_SECRET") ||
+  raise """
+  environment variable CLIENT_SECRET is missing.
+  """
+
+red_uri = 
+  System.get_env("REDIRECT_URI") ||
+  raise """
+  environment variable REDIRECT_URI is missing.
+  """
+
+config :melody_match, :spotify,
+  client_id: c_id,
+  client_secret: c_sec,
+  redirect_uri: red_uri,
   ecto_repos: [MelodyMatch.Repo]
 
 # Configures the endpoint
