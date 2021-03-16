@@ -90,7 +90,10 @@ defmodule Spotify do
 
     cond do
       response.status_code == 200 ->
-        {:ok, Jason.decode!(response.body)}
+        songs = response.body
+        |> Jason.decode!()
+        |> Map.get("items")
+        {:ok, songs}
       retries > 0 ->
         get_and_save_tokens(tokens.user_id, :refresh)
         get_top_songs(user_id, limit, retries - 1)
