@@ -81,19 +81,21 @@ defmodule Spotify do
     ["Authorization": "Basic #{auth}", "Content-Type": "application/x-www-form-urlencoded"]
   end
 
-  def get_top_songs(tokens, limit \\ 1, retries \\ 1) do
+  def get_top_songs(user_id, limit \\ 1, retries \\ 1) do
+    tokens = Accounts.get_user_spotify_token!(user_id)
+
     url = "https://api.spotify.com/v1/me/top/tracks?limit=#{limit}"
     headers = ["Authorization": "Bearer #{tokens.auth_token}"]
     response = HTTPoison.get!(url, headers)
 
     cond do
       response.status_code == 200 ->
-        {:ok, response.body}
+        {:ok, Jason.decode!(response.body)}
       retries > 0 ->
-        # TODO: get new token via refresh token
-        {:error, "Not yet implemented: RETRY"}
+        get_and_save_tokens(tokens.user_id, :refresh)
+        get_top_songs(user_id, limit, retries - 1)
       true ->
-        {:error, "Error fetching top tracks. Status #{response.status_code}."}
+        {:error, response.status_code, "Error fetching top tracks."}
     end
   end
 end
