@@ -1,4 +1,4 @@
-##Project Description
+## Project Description
 This project team is composed of Brian Austin, Liam Brown, Emma Reed,
 and Patricia Thompson. We intend to create a web app named 
 MelodyMatch. The intent of this application is to pair users into a
@@ -64,12 +64,12 @@ that. The second is that, presumably, if you match well with someone,
 you may wish to be able to speak with them again, and ensuring they 
 are in at least a similar time zone helps ensure this.
 
-##Experiments
+## Experiments
 In order to prepare for this project, the team did two experiments to 
 test the viability of creating an application for this course that 
 could correctly integrate with the Spotify API.
 
-###Experiment 1: Backend
+### Experiment 1: Backend
 The first experiment focused on the backend integration with the API. 
 The team was concerned about creating an elixir backend that could 
 correctly send and get information from an external API, so this 
@@ -122,7 +122,7 @@ the debugging of generating some custom config setups for the
 application that varied slightly from the previous config files we 
 had developed for class projects.
 
-###Experiment 2: Frontend
+### Experiment 2: Frontend
 Our second experiment focuses on making a seamless user experience
 for the registration process. While we did not include passwords in 
 this experiment because those add additional complexity, we wanted to 
@@ -156,7 +156,7 @@ allowed for conditional and reactive formatting based on what steps
 the user had already completed. From these learnings, we were able to 
 prove the concept of our front end application.
 
-##User Stories
+## User Stories
 This application only really has a single type of user. There’s not a 
 system administrator who can remove users or see everyone’s matches 
 (however, administration may be done at the database level if 
