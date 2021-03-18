@@ -1,68 +1,95 @@
 import "./Register.css";
-import { Form, Button, Container } from "react-bootstrap";
-import React, {useState} from 'react';
+import { Form, Button, Container} from "react-bootstrap";
+import React, {useEffect, useState} from 'react';
 
 export const authEndpoint = "https://accounts.spotify.com/authorize";
 // Replace with your app's client ID, redirect URI and desired scopes
 const clientId = process.env.REACT_APP_CLIENT_ID;
-const redirectUri = "http://localhost:3000";
+const redirectUri = "http%3A%2F%2Flocalhost%3A3000";
 const scopes = ["user-top-read"];
-// Get the hash of the url
-const hash = window.location.hash
-  .substring(1)
-  .split("&")
-  .reduce(function (initial, item) {
-    if (item) {
-      var parts = item.split("=");
-      initial[parts[0]] = decodeURIComponent(parts[1]);
-    }
-    return initial;
-  }, {});
-window.location.hash = "";
 
-export function Register() {
-  let _token = hash.access_token;
-  const [state, setState] = useState({token: null});
-  if (_token){
-    setState({token: _token});
+
+export function Register({spotify, submit}) {
+
+
+  function getCurrentlyPlaying(token) {
+    // Make a call using the token
+    $.ajax({
+      url: "https://api.spotify.com/v1/me/top/tracks",
+      type: "GET",
+      beforeSend: (xhr) => {
+        xhr.setRequestHeader("Authorization", "Bearer " + token);
+      },
+      success: (data) => {
+        this.setState({
+          item: data.item,
+          is_playing: data.is_playing,
+          progress_ms: data.progress_ms,
+        });
+      }
+    });
+  }
+
+  let spotify_component = (
+    <Button
+      href={`${authEndpoint}?response_type=token&client_id=${clientId}&redirect_uri=${redirectUri}&scope=${scopes.join(
+        "%20"
+      )}&show_dialog=true`}
+      className="spotify"
+    >
+      Login to Spotify
+    </Button>
+  );
+
+  if (spotify){
+    console.log(spotify)
+    spotify_component = (
+      <div>
+        {" "}
+        <Button
+          href={`${authEndpoint}?response_type=token&client_id=${clientId}&redirect_uri=${redirectUri}&scope=${scopes.join(
+            "%20"
+          )}&show_dialog=true`}
+          className="spotify"
+          disabled
+        >
+          Login to Spotify
+        </Button>
+        <p>Token has been collected</p>
+      </div>
+    );
   }
 
   return (
     <div className="Register">
       <Container>
-        <h1>Register</h1>
-        {!state.token && (
-          <a
-            className="btn btn--loginApp-link"
-            href={`${authEndpoint}?response_type=code&client_id=${clientId}&redirect_uri=${redirectUri}&scope=${scopes.join(
-              "%20"
-            )}&response_type=token&show_dialog=true`}
-          >
-            Login to Spotify
-          </a>
-        )}
-        <Form>
-          <Form.Group controlId="formBasicEmail">
-            <Form.Label>User Name</Form.Label>
-            <Form.Control type="text" placeholder="Enter user name" />
-          </Form.Group>
+        <h2>Register a New User</h2>
+        <Container>
+          <p>Step 1: Allow Spotify Access.</p>
+          {spotify_component}
+        </Container>
+        <hr />
+        <Container>
+          <p>Step 2: Fill in Personal Information</p>
+          <Form>
+            <Form.Group controlId="formBasicEmail">
+              <Form.Label>User Name</Form.Label>
+              <Form.Control type="text" placeholder="Enter user name" />
+            </Form.Group>
 
-          <Form.Group controlId="formBasicEmail">
-            <Form.Label>Email address</Form.Label>
-            <Form.Control type="email" placeholder="Enter email" />
-            <Form.Text className="text-muted">
-              Email will be used to connect you with other users.
-            </Form.Text>
-          </Form.Group>
+            <Form.Group controlId="formBasicEmail">
+              <Form.Label>Email address</Form.Label>
+              <Form.Control type="email" placeholder="Enter email" />
+              <Form.Text className="text-muted">
+                Email will be used to connect you with other users.
+              </Form.Text>
+            </Form.Group>
 
-          <Form.Group controlId="formBasicCheckbox">
-            <Form.Check type="checkbox" label="Check me out" />
-          </Form.Group>
-
-          <Button variant="primary" type="submit">
-            Submit
-          </Button>
-        </Form>
+            <Button variant="primary" onClick={submit}>
+              Submit
+            </Button>
+          </Form>
+        </Container>
       </Container>
     </div>
   );
